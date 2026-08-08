@@ -1,4 +1,6 @@
-function Navbar({ openModal }) {
+import NotificationToast from "./NotifciationToast";
+
+function Navbar({ openModal, notify, onNotificationClose }) {
   return (
     <nav
       style={{
@@ -31,6 +33,9 @@ function Navbar({ openModal }) {
           gap: "12px",
         }}
       >
+        {notify && (
+          <NotificationToast content={notify} onClose={onNotificationClose} />
+        )}
         <button
           style={{
             padding: "8px 14px",

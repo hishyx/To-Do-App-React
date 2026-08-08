@@ -3,21 +3,48 @@ import Navbar from "./components/Navbar";
 import NoteModal from "./components/NoteModal";
 import { tasks as mainTasks } from "./data";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [modalVisibility, setModalVisibility] = useState(false);
 
-  const [tasks, setTasks] = useState(mainTasks);
+  const [tasks, setTasks] = useState(() => {
+    const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+
+    return storedTasks ? storedTasks : mainTasks;
+  });
 
   const [taskToEdit, setTaskToEdit] = useState(null);
+
+  const [notification, setNotification] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    const overDueItemsCount = tasks.filter(
+      (task) => !task.completed && new Date(task.dueDate) < new Date(),
+    ).length;
+
+    if (overDueItemsCount > 0)
+      sendNotification(
+        `There ${overDueItemsCount == 1 ? "is" : "are"} ${overDueItemsCount} tasks overdued`,
+      );
+  }, []);
+
+  function sendNotification(text) {
+    setNotification(text);
+
+    setTimeout(() => setNotification(""), 3000);
+  }
 
   function onCheck(id) {
     return setTasks(
       tasks.map((task) => {
         return {
           ...task,
-          completed: task.id === id && !task.completed,
+          completed: task.id === id ? !task.completed : task.completed,
         };
       }),
     );
@@ -52,7 +79,11 @@ function App() {
 
   return (
     <>
-      <Navbar openModal={() => modalIsVisible(true)} />
+      <Navbar
+        openModal={() => modalIsVisible(true)}
+        notify={notification}
+        onNotificationClose={() => setNotification("")}
+      />
       <CardLayout
         tasks={tasks}
         onCheck={onCheck}

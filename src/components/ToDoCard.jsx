@@ -1,4 +1,8 @@
 function ToDoCard({ task, onEditClick, onDelete, onCheck }) {
+  // Check if the task is overdue
+  const isOverdue =
+    !task.completed && task.dueDate && new Date(task.dueDate) < new Date();
+
   return (
     <div
       style={{
@@ -66,11 +70,25 @@ function ToDoCard({ task, onEditClick, onDelete, onCheck }) {
         <small
           style={{
             marginLeft: "32px",
-            color: task.completed ? "#888" : "#FFC107",
+            color: isOverdue ? "#F44336" : task.completed ? "#888" : "#FFC107",
             fontSize: "0.9rem",
+            fontWeight: isOverdue ? "600" : "normal",
           }}
         >
           📅 Due: {task.dueDate}
+        </small>
+      )}
+
+      {/* Overdue Warning */}
+      {isOverdue && (
+        <small
+          style={{
+            marginLeft: "32px",
+            color: "#F44336",
+            fontWeight: "600",
+          }}
+        >
+          ⚠️ This task is overdue!
         </small>
       )}
 
