@@ -62,6 +62,11 @@ function App() {
   function onTaskSave(savedTask, isEdit) {
     console.log(savedTask);
 
+    if(tasks.filter(task=>task.title.toLowerCase() === savedTask.title.toLowerCase()).length>0){
+
+      throw new Error("Cant have duplicate tasks")
+    }
+
     return isEdit
       ? setTasks(
           tasks.map((task) =>
@@ -95,6 +100,7 @@ function App() {
           closeModal={() => modalIsVisible(false)}
           onTaskSave={onTaskSave}
           task={taskToEdit}
+          notificate={sendNotification}
         />
       )}
     </>
