@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function NoteModal({ closeModal, onTaskSave, task }) {
+function NoteModal({ closeModal, onTaskSave, task ,notificate}) {
   const [title, setTitle] = useState(task ? task.title : "");
   const [content, setContent] = useState(task ? task.content : "");
   const [dueDate, setDueDate] = useState(task ? task.dueDate : "");
@@ -8,8 +8,15 @@ function NoteModal({ closeModal, onTaskSave, task }) {
   function addTask() {
     const id = crypto.randomUUID();
 
-    if (title.length && content.length && dueDate) {
+    try{
+
       const isEdit = task ? true : false;
+
+
+      if(!title.length)throw new Error("Title is necessary")
+      if(!content.length)throw new Error("Content not written")
+
+      if(new Date(dueDate)<new Date())throw new Error("The due date can't be in the past")
 
       onTaskSave(
         {
@@ -22,9 +29,18 @@ function NoteModal({ closeModal, onTaskSave, task }) {
         },
         isEdit,
       );
-    }
 
     closeModal();
+
+    
+
+    }catch(err){
+
+      console.log("Error daa")
+      notificate(err.message)
+    }
+
+
   }
 
   return (

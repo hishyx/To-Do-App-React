@@ -1,9 +1,94 @@
+import { useState } from "react";
+
 function ToDoCard({ task, onEditClick, onDelete, onCheck }) {
+  
+   const [showDeleteModal,setDeleteModalVisibility]=useState(false)
+
+  
   // Check if the task is overdue
   const isOverdue =
     !task.completed && task.dueDate && new Date(task.dueDate) < new Date();
 
+  
+
+
+
   return (
+    <>
+    {showDeleteModal && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    }}
+  >
+    <div
+      style={{
+        width: "90%",
+        maxWidth: "400px",
+        padding: "25px",
+        borderRadius: "12px",
+        backgroundColor: "#1e1e1e",
+        color: "white",
+        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
+      }}
+    >
+      <h2>Delete Task?</h2>
+
+      <p>
+        Are you sure you want to delete{" "}
+        <strong>{task.title}</strong>?
+      </p>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "10px",
+        }}
+      >
+        <button
+          onClick={() => setDeleteModalVisibility(false)}
+          style={{
+            padding: "9px 16px",
+            border: "none",
+            borderRadius: "6px",
+            backgroundColor: "#555",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={() => {
+            onDelete(task.id);
+            setDeleteModalVisibility(false);
+          }}
+          style={{
+            padding: "9px 16px",
+            border: "none",
+            borderRadius: "6px",
+            backgroundColor: "#F44336",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     <div
       style={{
         width: "100%",
@@ -126,7 +211,7 @@ function ToDoCard({ task, onEditClick, onDelete, onCheck }) {
         </button>
 
         <button
-          onClick={() => onDelete(task.id)}
+          onClick={() => setDeleteModalVisibility(true)}
           style={{
             padding: "8px 14px",
             border: "none",
@@ -140,6 +225,8 @@ function ToDoCard({ task, onEditClick, onDelete, onCheck }) {
         </button>
       </div>
     </div>
+    </>
+
   );
 }
 
